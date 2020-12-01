@@ -1,8 +1,7 @@
 import java.io.File
 
-fun readFile(fileName: String)  =
-    File(fileName).readLines()
-
+fun readFile(fileName: String) =
+        File(fileName).readLines()
 
 
 fun main(args: Array<String>) {
@@ -12,13 +11,17 @@ fun main(args: Array<String>) {
             .map { it.toInt() }
 
     var pairs = numbers.map { first ->
-        numbers.map { second -> Pair(first, second) }
-    }.flatten()
+        numbers.map { second ->
+            numbers.map { third ->
+                Triple(first, second, third)
+            }
+        }
+    }.flatten().flatten()
 
-    var first = pairs.map { Pair(it, it.first + it.second) }
+    var first = pairs.map { Pair(it, it.first + it.second + it.third) }
             .filter { it.second == 2020 }
             .map { it.first }
-            .map { it.first * it.second }
+            .map { it.first * it.second * it.third }
             .first()
 
     println(first)
