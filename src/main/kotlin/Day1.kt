@@ -3,10 +3,7 @@ import java.io.File
 fun readFile(fileName: String) =
         File(fileName).readLines()
 
-
 fun main(args: Array<String>) {
-//    var numbers = listOf(1721, 979, 366, 299, 675, 1456)
-
     var numbers = readFile("./src/main/resources/day1Input.txt")
             .map { it.toInt() }
 
