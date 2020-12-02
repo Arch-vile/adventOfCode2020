@@ -1,3 +1,7 @@
+package day2p2
+
+import readFile
+
 data class Rule(
         val minCount: Int,
         val maxCount: Int,
