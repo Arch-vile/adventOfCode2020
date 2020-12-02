@@ -3,14 +3,15 @@ package day2p2
 import readFile
 
 data class Rule(
-        val minCount: Int,
-        val maxCount: Int,
+        val firstIndex: Int,
+        val secondIndex: Int,
         val letter: Char)
 
 fun isValid(rule: Rule, passwd: String): Boolean {
-    val onlyGivenLetters = passwd.replace("""[^${rule.letter}]*""".toRegex(), "")
-    return onlyGivenLetters.length >= rule.minCount &&
-            onlyGivenLetters.length <= rule.maxCount
+    val isFirstIndexRuleLetter = passwd[rule.firstIndex-1] === rule.letter
+    val isSecondIndexRuleLetter = passwd[rule.secondIndex-1] === rule.letter
+    return (isFirstIndexRuleLetter && !isSecondIndexRuleLetter) ||
+            (!isFirstIndexRuleLetter && isSecondIndexRuleLetter)
 }
 
 fun parse(line: String): Pair<Rule, String> {
