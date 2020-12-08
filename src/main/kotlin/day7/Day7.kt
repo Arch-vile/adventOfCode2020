@@ -4,7 +4,13 @@ import readFile
 
 data class Row(val color: String, val capacity: List<Pair<String, Int>>)
 data class Capacity(val bag: Bag, val amount: Int)
-data class Bag(val color: String, var capacity: MutableList<Capacity>)
+data class Bag(val color: String, var capacity: MutableList<Capacity>) {
+  fun getContainedBagCount(): Int {
+    return capacity
+      .map { it.amount + it.amount * it.bag.getContainedBagCount() }
+      .sum()
+  }
+}
 
 fun main(args: Array<String>) {
   val rows =
@@ -27,6 +33,7 @@ fun main(args: Array<String>) {
       bag.capacity = bagsCapacity.toMutableList()
     }
 
+  // # Part 1
   println(
     bags
       .map { it.toString() }
@@ -34,6 +41,9 @@ fun main(args: Array<String>) {
       .count() - 1
   )
 
+  // # Part 2
+  val ourBag = bags.find { it.color == "shiny gold" }!!
+  println(ourBag.getContainedBagCount())
 }
 
 fun parse(input: String): Row {
