@@ -23,9 +23,7 @@ fun main(args: Array<String>) {
   val part1Answer = input
     .windowed(26)
     .filter {
-      val foo = pairCombinationsSums(it.dropLast(1))
-      val test = it[25]
-      !foo.contains(test)
+      !pairCombinationsSums(it.dropLast(1)).contains(it[25])
     }
     .map { it[25] }
     .first()
