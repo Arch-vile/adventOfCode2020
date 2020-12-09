@@ -19,8 +19,8 @@ fun main(args: Array<String>) {
   val input = readFile("./src/main/resources/day9Input.txt")
     .map { it.toLong() }
 
-  println(
-  input
+  // Part 1
+  val part1Answer = input
     .windowed(26)
     .filter {
       val foo = pairCombinationsSums(it.dropLast(1))
@@ -28,8 +28,22 @@ fun main(args: Array<String>) {
       !foo.contains(test)
     }
     .map { it[25] }
-    .first())
+    .first()
+  println(part1Answer)
 
+  // Part 2
+  val part2Answer = (2 until input.size).asSequence()
+    .map {
+        input.windowed(it)
+          .firstOrNull() { window -> window.sum() == part1Answer }
+          ?.let { matchingWindow ->
+            matchingWindow.minOrNull()!! + matchingWindow.maxOrNull()!!
+          }
+    }
+    .filterNotNull()
+    .first()
+
+  println(part2Answer)
 }
 
 
