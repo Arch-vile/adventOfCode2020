@@ -29,10 +29,9 @@ fun main(args: Array<String>) {
   val product =
     parts
       .map { it.size }
-      .filter { it != 0 }
       .map {
         when (it) {
-          1 -> 1L
+          0,1 -> 1L
           2 -> 2L
           3 -> 4L
           else -> 7L
