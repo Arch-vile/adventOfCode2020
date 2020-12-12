@@ -11,39 +11,47 @@ fun main(args: Array<String>) {
     .map { regexp.find(it)!!.groupValues }
     .map { Pair(it[1][0], it[2].toInt()) }
 
-  var direction = 90
-  var x = 0
-  var y = 0
+  var speedX = 10
+  var speedY = 1
+  var shipX = 0
+  var shipY = 0
 
-  fun move(dir: Pair<Char, Int>) {
-    when (dir.first) {
-      'E' -> x += dir.second
-      'W' -> x -= dir.second
-      'N' -> y += dir.second
-      'S' -> y -= dir.second
+  fun rotate(dir: Pair<Char, Int>) {
+    var angle = dir.second
+    if (dir.first == 'L') {
+      angle = -1 * angle + 360
     }
+
+    repeat(angle / 90) {
+      var oldSpeedX = speedX
+      speedX = speedY
+      speedY = -1 * oldSpeedX
+    }
+  }
+
+  fun alterSpeed(dir: Pair<Char, Int>) {
+    when (dir.first) {
+      'E' -> speedX += dir.second
+      'W' -> speedX -= dir.second
+      'N' -> speedY += dir.second
+      'S' -> speedY -= dir.second
+      'L', 'R' -> rotate(dir)
+    }
+  }
+
+  fun move(amount: Int) {
+    shipX +=  speedX * amount
+    shipY += speedY * amount
   }
 
   input.forEach {
     when (it.first) {
-      'R' -> direction = (direction + it.second) % 360
-      'L' -> direction = (direction - it.second + 360) % 360
-      'F' -> move(Pair(asCompassPoint(direction), it.second))
-      else -> move(it)
+      'F' -> move(it.second)
+      else -> alterSpeed(it)
     }
   }
 
-  println( abs(x) + abs(y))
+  println(abs(shipX) + abs(shipY))
 }
 
-fun asCompassPoint(bearing: Int): Char {
-  return when (bearing) {
-    0 -> 'N'
-    90 -> 'E'
-    180 -> 'S'
-    270 -> 'W'
-    else -> throw Error("Unhandled bearing $bearing")
-  }
-
-}
 
