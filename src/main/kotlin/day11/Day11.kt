@@ -26,27 +26,26 @@ fun main(args: Array<String>) {
   do {
     lobby = newLobby
     newLobby = lobby
-      .mapIndexed { index, char ->
-        if (char == 'L') {
-          if (allSurroundingsEmpty(index, lobby, width, height)) {
-            '#'
-          } else {
-            'L'
-          }
-        } else if (char == '#') {
-          if (hasNeighbourgs(index, lobby, width, height)) {
-            'L'
-          } else {
-            '#'
-          }
-        } else '.'
-      }
+      .mapIndexed { index, char -> transform(char, index, lobby, width, height) }
   } while (!areEqual(lobby, newLobby))
-
 
   println(
     newLobby.filter { it == '#' }.count()
   )
+}
+
+private fun transform(char: Char, index: Int, lobby: List<Char>, width: Int, height: Int): Char {
+  if (char == 'L') {
+    if (allSurroundingsEmpty(index, lobby, width, height)) {
+      return '#'
+    }
+  } else if (char == '#') {
+    if (hasNeighbourgs(index, lobby, width, height)) {
+      return 'L'
+    }
+  }
+
+  return char
 }
 
 fun areEqual(lobby: List<Char>, newLobby: List<Char>) =
@@ -71,7 +70,7 @@ fun allSurroundingsEmpty(index: Int, lobby: List<Char>, width: Int, height: Int)
 
   for (line in lines) {
     for (coord in line) {
-      if(lobby[coord] == 'L')
+      if (lobby[coord] == 'L')
         break
 
       if (lobby[coord] == '#')
