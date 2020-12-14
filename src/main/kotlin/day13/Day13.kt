@@ -3,36 +3,37 @@ package day13
 import readFile
 
 fun main(args: Array<String>) {
-  val input = readFile("./src/main/resources/testInput.txt")
-
+  val input = readFile("./src/main/resources/day13Input.txt")
 
   val timestamp = input[0].toLong()
   val schedules = input[1].split(",")
-    .map { if(it == "x") "-1" else it }
-    .map { it.toInt() }
+    .map { if (it == "x") "-1" else it }
+    .map { it.toLong() }
 
   // Part 1
   val busLine = schedules
-    .filter { it != -1 }
+    .filter { it != -1L }
     .map {
-      Pair(it,it - timestamp % it)
+      Pair(it, it - timestamp % it)
     }
     .minByOrNull { it.second }!!
   println(busLine.first * busLine.second)
 
-
   // Part 2
-  var time = 1
-  while(true) {
+  // Magical values. Time is the solution to the:
+  // 17,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,643,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,29,x,433,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x
+  // and the step is the product of those 17*643*29*433
+  var time = 124263591L
+  val step = 137260567L
+  while (true) {
     var match = true
-    for (i in 0 until schedules.size) {
+    for (i in schedules.indices) {
       val schedule = schedules[i]
-      if (schedule != -1) {
-        var offSet = time % schedule
-        if ((schedule - offSet) % schedule != i) {
-          match = false
-          break
-        }
+      if (schedule != -1L) {
+          if ((time + i) % schedule != 0L) {
+            match = false
+            break
+          }
       }
     }
 
@@ -40,7 +41,7 @@ fun main(args: Array<String>) {
       println(time)
       break
     }
-    time++
+    time += step
   }
 
 }
