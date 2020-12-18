@@ -16,3 +16,16 @@ fun <T> subsets(collection: List<T>): List<List<T>> {
   return subsets.filter { it.isNotEmpty() }
 }
 
+fun <T>  transpose(matrix: List<List<T>>): List<List<T>> {
+  return IntRange(0,matrix[0].size-1)
+    .map { column ->
+      matrix.map {
+        it[column]
+      }
+    }
+}
+
+fun <T> intersect(data: List<List<T>>): List<T> {
+return data.reduce { acc, list -> acc.intersect(list).toList() }
+}
+
