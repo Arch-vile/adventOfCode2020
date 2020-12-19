@@ -4,7 +4,7 @@ import readFile
 
 
 fun main(args: Array<String>) {
-  val input = readFile("./src/main/resources/day10Input.txt")
+  val input = readFile("./src/main/resources/timonInput.txt")
     .map { it.toLong() }.toMutableList()
 
   input.add(0)
