@@ -2,7 +2,7 @@ package day17
 
 import readFile
 
-data class Coordinates(val x: Int, val y: Int, val z: Int)
+data class Coordinates(val x: Int, val y: Int, val z: Int, val w: Int)
 data class Cube(var state: Boolean) {
   fun stateSymbol(): Char {
     return if (state) '#' else '.'
@@ -13,37 +13,44 @@ class World {
 
   // Let's make world enough to contain everything after 6 rounds of expansion
   // Also +2 to make sure we have neighbours for the edge pieces available.
-  var data: List<List<List<Cube>>> = IntRange(0, 40)
+  var data: List<List<List<List<Cube>>>> = IntRange(0, 40)
     .map {
       IntRange(0, 40)
         .map {
           IntRange(0, 40)
-            .map { Cube(false) }
+            .map {
+              IntRange(0, 40)
+                .map { Cube(false) }
+            }
         }
     }
 
-  fun getCube(x: Int, y: Int, z: Int) = data[x][y][z]
+  fun getCube(x: Int, y: Int, z: Int, w: Int) = data[x][y][z][w]
 
-  fun all(): Sequence<Pair<Coordinates,Cube>> {
+  fun all(): Sequence<Pair<Coordinates, Cube>> {
     return sequence {
       for (x in 1 until data.size - 1) {
         for (y in 1 until data[0].size - 1) {
           for (z in 1 until data[0][0].size - 1) {
-            yield(Pair(Coordinates(x, y, z), data[x][y][z]))
+            for (w in 1 until data[0][0][0].size - 1) {
+              yield(Pair(Coordinates(x, y, z, w), data[x][y][z][w]))
+            }
           }
         }
       }
     }
   }
 
-  fun getNeighbours(x: Int, y: Int, z: Int): List<Cube> {
+  fun getNeighbours(x: Int, y: Int, z: Int, w: Int): List<Cube> {
     return IntRange(-1, 1).flatMap { xOffset ->
       IntRange(-1, 1).flatMap { yOffset ->
-        IntRange(-1, 1).map { zOffset ->
-          if (xOffset == 0 && yOffset == 0 && zOffset == 0) {
-            null
-          } else {
-            getCube(x + xOffset, y + yOffset, z + zOffset)
+        IntRange(-1, 1).flatMap { zOffset ->
+          IntRange(-1, 1).map { wOffset ->
+            if (xOffset == 0 && yOffset == 0 && zOffset == 0 && wOffset == 0) {
+              null
+            } else {
+              getCube(x + xOffset, y + yOffset, z + zOffset, w + wOffset)
+            }
           }
         }
       }
@@ -59,13 +66,14 @@ fun main(args: Array<String>) {
   val world = World()
   val xOffset = 15
   val yOffset = 15
+  val w = 15
   val z = 15
 
   // Load the initial state from input
   input.forEachIndexed { y, line ->
     line.forEachIndexed { x, cubeState ->
       if (cubeState == '#') {
-        world.getCube(x + xOffset, -y + yOffset, z).state = true
+        world.getCube(x + xOffset, -y + yOffset, z, w).state = true
       }
     }
   }
@@ -73,10 +81,10 @@ fun main(args: Array<String>) {
   repeat(6) {
     val statesToSwitch = mutableListOf<Cube>()
     world.all().forEach {
-      val (x, y, z) = it.first
+      val (x, y, z, w) = it.first
       val cube = it.second
       val activeNeighbours =
-        world.getNeighbours(x, y, z)
+        world.getNeighbours(x, y, z, w)
           .filter { it.state }
 
       if (cube.state) {
@@ -97,7 +105,7 @@ fun main(args: Array<String>) {
       .filter { it.second.state }
       .count())
 
-  printWorld(world)
+//  printWorld(world)
 }
 
 fun printWorld(world: World) {
@@ -105,7 +113,7 @@ fun printWorld(world: World) {
     println("Z: $z")
     for (y in world.data[0].indices) {
       for (x in world.data.indices) {
-        print(world.getCube(x, world.data[0].size - 1 - y, z).stateSymbol())
+        print(world.getCube(x, world.data[0].size - 1 - y, z, 0).stateSymbol())
       }
       println("")
     }
