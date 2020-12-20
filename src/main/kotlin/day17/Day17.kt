@@ -2,7 +2,7 @@ package day17
 
 import readFile
 
-
+data class Coordinates(val x: Int, val y: Int, val z: Int)
 data class Cube(var state: Boolean) {
   fun stateSymbol(): Char {
     return if (state) '#' else '.'
@@ -24,12 +24,12 @@ class World {
 
   fun getCube(x: Int, y: Int, z: Int) = data[x][y][z]
 
-  fun all(): Sequence<Pair<Triple<Int,Int,Int>,Cube>> {
+  fun all(): Sequence<Pair<Coordinates,Cube>> {
     return sequence {
       for (x in 1 until data.size - 1) {
         for (y in 1 until data[0].size - 1) {
           for (z in 1 until data[0][0].size - 1) {
-            yield(Pair(Triple(x, y, z), data[x][y][z]))
+            yield(Pair(Coordinates(x, y, z), data[x][y][z]))
           }
         }
       }
