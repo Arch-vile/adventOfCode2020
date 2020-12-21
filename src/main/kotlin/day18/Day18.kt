@@ -13,21 +13,26 @@ fun main(args: Array<String>) {
 }
 
 fun calculate(originalCalculation: String): Long {
-  var calculation = originalCalculation
+  var calculation = originalCalculation.replace(" ", "")
   while (hasParenthesis(calculation)) {
     calculation = removeDeepestParenthesis(calculation)
   }
   return calculateSimple(calculation)
 }
 
-// Input be like "3 + 2 * 4"
+// Input be like "8 * 3 + 2 * 4"
 fun calculateSimple(calculation: String): Long {
-  // Will be like 3,+2,*4
-  val parts = split(calculation)
-  return parts
-    .fold(0L) { acc: Long, part: String ->
-      combine(acc, part)
-    }
+  return calculation
+    .split("*")
+    .map { calculateSimpleSum(it) }
+    .reduce { acc, number -> acc * number }
+}
+
+// Input be like "3+3+1"
+fun calculateSimpleSum(calculation: String): Long {
+  return calculation.split("+")
+    .map { it.toLong() }
+    .sum()
 }
 
 // Part be like "+3" or "*4"
@@ -43,7 +48,6 @@ fun combine(acc: Long, part: String): Long {
 // "3 + 2 * 4" Will be like 3,+2,*4
 fun split(calculation: String): List<String> {
   return calculation
-    .replace(" ", "")
     .replace("+", "%+")
     .replace("*", "%*")
     .split("%")
