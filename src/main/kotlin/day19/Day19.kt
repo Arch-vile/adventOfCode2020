@@ -10,6 +10,15 @@ fun main(args: Array<String>) {
 
   val rulesInput =
     input[0].split("\n")
+      .map {
+        if( it.take(2) == "8:"  ) {
+          "8: ( 42 ) +"
+        } else if (it.take(3) == "11:") {
+          "11: " + rule11Mod()
+        }
+        else it
+
+      }
       .map { it.split(" ") }
 
   val superMegaRegex = buildReqex(rulesInput)
@@ -20,6 +29,11 @@ fun main(args: Array<String>) {
     .count()
 
   println(matchingMessages)
+}
+
+fun rule11Mod(): String {
+  return IntRange(1, 10)
+    .joinToString(" | ") { "( 42 {$it} 31 {$it} )" }
 }
 
 fun buildReqex(rulesInput: List<List<String>>): Regex {
