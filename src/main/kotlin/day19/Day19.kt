@@ -4,7 +4,7 @@ import java.io.File
 
 
 fun main(args: Array<String>) {
-  val input = File("./src/main/resources/testInput.txt")
+  val input = File("./src/main/resources/day19Input.txt")
     .readText()
     .split("\n\n")
 
@@ -30,17 +30,19 @@ fun buildReqex(rulesInput: List<List<String>>): Regex {
       ruleZero = ruleZero
       .flatMap {
         if (isNumber(it)) {
-            rulesMap[it.toInt()]!!
+           listOf("(").plus(rulesMap[it.toInt()]!!).plus(")")
         } else {
           listOf(it)
         }
       }
-    println(ruleZero.joinToString(" ") )
   }
 
-  val regExAsString = ruleZero
+  val regExAsString =
+    ruleZero
+      .joinToString("")
+      .replace("""(\(")|("\))""".toRegex(),"")
   println(regExAsString)
-  return """""".toRegex()
+  return regExAsString.toRegex()
 }
 
 fun buildRulesMap(rulesInput: List<List<String>>): Map<Int, List<String>> {
@@ -52,7 +54,7 @@ fun buildRulesMap(rulesInput: List<List<String>>): Map<Int, List<String>> {
 }
 
 fun hasRuleReferences(ruleZero: List<String>): Boolean {
- val numberRegex = """\d""".toRegex()
+ val numberRegex = """\d+""".toRegex()
   return ruleZero.any { numberRegex.matches(it) }
 }
 
