@@ -16,6 +16,20 @@ fun <T> subsets(collection: List<T>): List<List<T>> {
   return subsets.filter { it.isNotEmpty() }
 }
 
+
+fun <T> rotateCW(matrix: List<List<T>>): List<List<T>> {
+  return IntRange(0,matrix[0].size-1)
+    .map {x ->
+      ((matrix.size-1) downTo 0).map { y ->
+        matrix[y][x]
+      }
+    }
+}
+
+
+
+// This seems to flip horizontally and then rotate CW 🤷‍♂️
+// btw the nested list means that the first nested list is the first row of the matrix
 fun <T>  transpose(matrix: List<List<T>>): List<List<T>> {
   return IntRange(0,matrix[0].size-1)
     .map { column ->
